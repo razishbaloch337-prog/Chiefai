@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neuro Editor AI - Pro Studio</title>
+    <style>
+        :root {
+            --bg-dark: #060b14;
+            --card-bg: #0f172a;
+            --border-color: #1e293b;
+            --primary-cyan: #00e5ff;
+            --accent-purple: #9333ea;
+            --accent-green: #10b981;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            padding-bottom: 85px;
+        }
+        /* AdSense Slots */
+        .ad-slot-box {
+            width: 100%;
+            max-width: 500px;
+            margin: 10px auto;
+            background: #111827;
+            border: 1px dashed #334155;
+            border-radius: 10px;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            padding: 6px;
+        }
+        .ad-sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 62px;
+            background: #090d16;
+            border-top: 2px solid var(--primary-cyan);
+            z-index: 990;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+        /* Large Interstitial Modals */
+        .ad-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .ad-modal-card {
+            background: #1e293b;
+            border: 2px solid var(--primary-cyan);
+            border-radius: 16px;
+            padding: 16px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+        }
+        .ad-large-unit {
+            width: 100%;
+            height: 250px;
+            background: #0f172a;
+            border: 1px dashed #00e5ff;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #00e5ff;
+            font-size: 13px;
+            margin: 10px 0;
+            padding: 10px;
+        }
+        /* App Layout */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+        .app-header {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .brand-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 8px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #00e5ff, #8a2be2, #10b981);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+        }
+        .app-header h1 {
+            font-size: 24px;
+            background: linear-gradient(to right, #00e5ff, #c084fc, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .app-header p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-cyan);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Platform Selector */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .plat-btn {
+            background: #162033;
+            border: 1px solid #2d3c59;
+            border-radius: 10px;
+            padding: 10px 4px;
+            text-align: center;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .plat-btn.active {
+            background: rgba(0, 229, 255, 0.15);
+            border-color: var(--primary-cyan);
+            color: #fff;
+        }
+        /* Upload Boxes */
+        .upload-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .upload-box {
+            background: #162033;
+            border: 1px dashed #38bdf8;
+            border-radius: 10px;
+            padding: 12px 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-box .icon { font-size: 20px; display: block; margin-bottom: 3px; }
+        .upload-box strong { font-size: 11px; display: block; color: #fff; }
+        .upload-box small { font-size: 9px; color: var(--text-muted); }
+        /* Studio Canvas Container */
+        .studio-wrapper {
+            width: 100%;
+            background: #04070d;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        canvas {
+            max-width: 100%;
+            max-height: 440px;
+            border-radius: 8px;
+            display: block;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+        .live-pill {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid var(--primary-cyan);
+            color: var(--primary-cyan);
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            pointer-events: none;
+        }
+        /* Image Fit Mode Buttons */
+        .fit-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        /* Effects Grid (3 Columns Large Boxes) */
+        .effects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .effect-btn {
+            background: #162033;
+            border: 1px solid #28354d;
+            border-radius: 10px;
+            padding: 10px 4px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 11px;
+            color: #e2e8f0;
+            min-height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .effect-btn.active {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.2);
+            color: #fff;
+            font-weight: bold;
+        }
+        .effect-btn span {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        /* More 100 Modal */
+        #moreEffectsModal {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            z-index: 8500;
+            display: none;
+            flex-direction: column;
+            padding: 12px;
+        }
+        .more-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+        .more-modal-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        /* Sliders & Controls */
+        .slider-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #162033;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            margin-top: 8px;
+            gap: 8px;
+        }
+        .slider-row span:first-child { min-width: 85px; }
+        .slider-row input[type="range"] { flex: 1; accent-color: var(--primary-cyan); }
+        .slider-row span:last-child { min-width: 36px; text-align: right; color: var(--primary-cyan); font-weight: bold; }
+        /* Repeat Song 1x-5x & 6x-10x */
+        .repeat-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .rep-pill {
+            background: #162033;
+            border: 1px solid #2d3c59;
+            color: #fff;
+            padding: 8px 0;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .rep-pill.active {
+            background: var(--primary-cyan);
+            color: #000;
+            border-color: var(--primary-cyan);
+        }
+        /* Inputs & Checkboxes */
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            background: #090f1d;
+            border: 1px solid #2d3c59;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            outline: none;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #162033;
+            padding: 9px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+        .check-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-cyan);
+        }
+        .viral-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        /* Buttons */
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 12px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-cyan { background: var(--primary-cyan); color: #000; }
+        .btn-dark { background: #1e293b; color: #fff; border: 1px solid #334155; }
+        .btn-green { background: var(--accent-green); color: #fff; }
+        .btn-main-export {
+            width: 100%;
+            padding: 14px;
+            font-size: 14px;
+            color: #fff;
+            background: linear-gradient(90deg, #00e5ff, #8a2be2);
+            margin-top: 10px;
+        }
+        .social-share-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        /* Rendering Modal with 5s Rotating Ads */
+        #exportModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 11, 20, 0.98);
+            z-index: 9500;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            text-align: center;
+        }
+        .progress-track {
+            width: 100%;
+            max-width: 360px;
+            height: 14px;
+            background: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00e5ff, #10b981);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. STARTUP INTERSTITIAL AD -->
+    <div id="startupAdOverlay" class="ad-modal-overlay" style="display: flex;">
+        <div class="ad-modal-card">
+            <span style="font-size: 10px; color: #94a3b8;">SPONSORED ADVERTISEMENT</span>
+            <div class="ad-large-unit">
+                <strong>[AdSense Startup Large Ad 300x250]</strong>
+                <span style="font-size: 11px; color: #94a3b8; margin-top: 6px;">Place your AdSense unit code here</span>
+            </div>
+            <button class="btn btn-cyan" style="width: 100%; border-radius: 25px;" onclick="closeAdModal('startupAdOverlay')">
+                Continue to Neuro Editor AI ➔
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. ACTION INTERSTITIAL AD (Triggers on More 100 or Social Share) -->
+    <div id="actionAdOverlay" class="ad-modal-overlay">
+        <div class="ad-modal-card">
+            <span style="font-size: 10px; color: #94a3b8;">SPONSORED ADVERTISEMENT</span>
+            <div class="ad-large-unit">
+                <strong>[AdSense Action Interstitial 300x250]</strong>
+                <span style="font-size: 11px; color: #94a3b8; margin-top: 6px;">High-CPM Ad Unit</span>
+            </div>
+            <button class="btn btn-cyan" style="width: 100%; border-radius: 25px;" onclick="proceedAfterActionAd()">
+                Continue ➔
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. MORE 100 EFFECTS MODAL (Large 3-Column Boxes) -->
+    <div id="moreEffectsModal">
+        <div class="more-modal-header">
+            <strong style="color: var(--primary-cyan); font-size: 15px;">✨ All 100 Live Effects</strong>
+            <button class="btn btn-dark" style="padding: 6px 12px;" onclick="document.getElementById('moreEffectsModal').style.display='none'">✕ Close</button>
+        </div>
+        <input type="text" id="effectSearchBox" placeholder="🔍 Search effect (rain, rose, fire, heart, star...)" style="margin-bottom: 10px;" oninput="filterHundredEffects()">
+        <div class="more-modal-scroll">
+            <div class="effects-grid" id="allHundredGrid"></div>
+        </div>
+    </div>
+
+    <!-- TOP BANNER AD -->
+    <div class="ad-slot-box">
+        <span>SPONSORED</span>
+        <div>[AdSense Top Header Banner 320x50]</div>
+    </div>
+
+    <div class="app-container">
+        <div class="app-header">
+            <div class="brand-icon">N</div>
+            <h1>Neuro Editor AI</h1>
+            <p>Auto-Fit Smart Studio • YouTube, TikTok & Instagram • 100 Live Effects</p>
+        </div>
+
+        <!-- SECTION 1: PLATFORM SIZE & MEDIA UPLOAD -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>📐 1. Platform Size & Media Upload</span>
+                <span id="ratioBadge" style="font-size: 11px; color: #34d399;">TikTok 9:16</span>
+            </div>
+
+            <div class="platform-grid">
+                <div class="plat-btn active" onclick="setPlatform('tiktok', this)">🎵 TikTok / Reels<br><small style="font-weight:normal;">(9:16 Vertical)</small></div>
+                <div class="plat-btn" onclick="setPlatform('youtube', this)">▶️ YouTube<br><small style="font-weight:normal;">(16:9 Wide)</small></div>
+                <div class="plat-btn" onclick="setPlatform('instagram', this)">📸 Instagram<br><small style="font-weight:normal;">(1:1 Square)</small></div>
+            </div>
+
+            <div class="upload-row">
+                <label class="upload-box">
+                    <span class="icon">🖼️</span>
+                    <strong>Add Photo</strong>
+                    <small>Auto-Fit HD</small>
+                    <input type="file" id="imgInput" accept="image/*" hidden>
+                </label>
+                <label class="upload-box">
+                    <span class="icon">🎥</span>
+                    <strong>Add Video</strong>
+                    <small>MP4 Clip</small>
+                    <input type="file" id="vidInput" accept="video/*" hidden>
+                </label>
+                <label class="upload-box">
+                    <span class="icon">🎵</span>
+                    <strong>Add Song</strong>
+                    <small>MP3 Audio</small>
+                    <input type="file" id="audInput" accept="audio/*" hidden>
+                </label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" id="muteOrigVideo" checked>
+                <label for="muteOrigVideo">اپ لوڈ کردہ ویڈیو کی اپنی آواز بند رکھیں (صرف نیا گانا چلائیں) 🔇</label>
+            </div>
+        </div>
+
+        <!-- SECTION 2: LIVE STUDIO CANVAS & AUTO-FIT CONTROLS -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>📺 2. Live Auto-Fit Studio</span>
+                <span id="currentEffectLabel" style="font-size: 11px; color: #ec4899;">❄️ Snowfall</span>
+            </div>
+
+            <div class="studio-wrapper">
+                <div class="live-pill">• LIVE HD</div>
+                <canvas id="mainCanvas" width="540" height="960"></canvas>
+            </div>
+
+            <!-- Auto-Fit Mode Selector -->
+            <div class="fit-row">
+                <button class="btn btn-cyan" id="btnFitBlur" onclick="setFitMode('blur')">✨ Smart Blur Fill (کالے کنارے ختم)</button>
+                <button class="btn btn-dark" id="btnFitStretch" onclick="setFitMode('fill')">🔲 Full Box Fill (مکمل باکس بھریں)</button>
+            </div>
+
+            <!-- HD Enhancer & Filters -->
+            <button class="btn btn-green" style="width: 100%; margin-bottom: 6px;" onclick="autoEnhanceHD()">
+                🪄 One-Click HD Auto Clean & Brighten (تصویر صاف اور روشن کریں)
+            </button>
+
+            <div class="slider-row">
+                <span>☀️ Brightness:</span>
+                <input type="range" id="brightSlider" min="50" max="180" value="105">
+                <span id="brightVal">105%</span>
+            </div>
+            <div class="slider-row">
+                <span>🌗 Contrast:</span>
+                <input type="range" id="contrastSlider" min="60" max="180" value="108">
+                <span id="contrastVal">108%</span>
+            </div>
+            <div class="slider-row">
+                <span>🎨 Color Boost:</span>
+                <input type="range" id="satSlider" min="50" max="200" value="115">
+                <span id="satVal">115%</span>
+            </div>
+            <div class="slider-row">
+                <span>🔍 Zoom Size:</span>
+                <input type="range" id="scaleSlider" min="50" max="150" value="100">
+                <span id="scaleText">100%</span>
+            </div>
+
+            <!-- Quick Effects + More (100) Button -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 12px 0 8px;">
+                <span style="font-size: 12px; font-weight: bold; color: #cbd5e1;">✨ Live Falling Effects:</span>
+                <button class="btn btn-cyan" style="padding: 6px 12px; font-size: 11px;" onclick="openMoreEffectsWithAd()">More (100) ☰</button>
+            </div>
+
+            <div class="effects-grid">
+                <div class="effect-btn active" onclick="changeEffect('snow', '❄️ Snowfall', this)"><span>❄️</span>Snowfall</div>
+                <div class="effect-btn" onclick="changeEffect('roses', '🌹 Red Roses', this)"><span>🌹</span>Red Roses</div>
+                <div class="effect-btn" onclick="changeEffect('rain', '🌧️ Heavy Rain', this)"><span>🌧️</span>Heavy Rain</div>
+                <div class="effect-btn" onclick="changeEffect('sakura', '🌸 Sakura', this)"><span>🌸</span>Sakura</div>
+                <div class="effect-btn" onclick="changeEffect('hearts', '💖 Hearts', this)"><span>💖</span>Hearts</div>
+                <div class="effect-btn" onclick="changeEffect('none', '🚫 None', this)"><span>🚫</span>No Effect</div>
+            </div>
+        </div>
+
+        <!-- IN-FEED AD -->
+        <div class="ad-slot-box">
+            <span>SPONSORED</span>
+            <div>[AdSense In-Feed Banner Ad]</div>
+        </div>
+
+        <!-- SECTION 3: VIRAL TOOLS -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>🚀 YouTube, TikTok & Instagram Viral Tools</span>
+            </div>
+            <div class="viral-grid">
+                <div class="check-item" style="margin-top:0;"><input type="checkbox" id="toolSub" checked><label for="toolSub">🔔 Subscribe + Bell & Like</label></div>
+                <div class="check-item" style="margin-top:0;"><input type="checkbox" id="toolWave" checked><label for="toolWave">🌈 Colorful Audio Waves</label></div>
+                <div class="check-item" style="margin-top:0;"><input type="checkbox" id="toolZoom"><label for="toolZoom">🎥 Auto Cinematic Zoom</label></div>
+                <div class="check-item" style="margin-top:0;"><input type="checkbox" id="toolDisc"><label for="toolDisc">💿 TikTok Rotating Disc</label></div>
+                <div class="check-item" style="margin-top:0;"><input type="checkbox" id="toolBorder"><label for="toolBorder">🖼️ Neon Border Frame</label></div>
+                <div class="check-item" style="margin-top:0;"><input type="checkbox" id="toolLine" checked><label for="toolLine">⏳ Song Timeline Bar</label></div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: AUDIO LOOP & POETRY -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>🎛️ 3. Audio Loop, Clarity & Poetry</span>
+                <span id="loopDisplay" style="color: var(--primary-cyan);">Loop: 1x</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                <input type="text" id="textPoetry" placeholder="✍️ اردو یا انگلش شاعری لکھیں...">
+                <input type="text" id="textChannel" placeholder="🏷️ @YourChannel">
+            </div>
+
+            <button class="btn btn-cyan" style="width: 100%; margin-bottom: 12px;" onclick="autoPoetry()">
+                🤖 Auto Write Aesthetic Poetry (AI)
+            </button>
+
+            <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px;">
+                🔁 Repeat Song (ایک تصویر یا ویڈیو پر گانا کتنی بار چلے):
+            </div>
+
+            <div class="repeat-row">
+                <button class="rep-pill active" onclick="selectRepeat(1, this)">1x</button>
+                <button class="rep-pill" onclick="selectRepeat(2, this)">2x</button>
+                <button class="rep-pill" onclick="selectRepeat(3, this)">3x</button>
+                <button class="rep-pill" onclick="selectRepeat(4, this)">4x</button>
+                <button class="rep-pill" onclick="selectRepeat(5, this)">5x</button>
+            </div>
+
+            <div class="repeat-row">
+                <button class="rep-pill" onclick="selectRepeat(6, this)">6x</button>
+                <button class="rep-pill" onclick="selectRepeat(7, this)">7x</button>
+                <button class="rep-pill" onclick="selectRepeat(8, this)">8x</button>
+                <button class="rep-pill" onclick="selectRepeat(9, this)">9x</button>
+                <button class="rep-pill" onclick="selectRepeat(10, this)">10x</button>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <input type="number" id="customLoopBox" min="1" max="10000" placeholder="اپنی مرضی کی تعداد (مثلاً 50 یا 100)">
+                <button class="btn btn-cyan" onclick="applyCustomLoop()">Apply</button>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" id="cleanAudioCheck" checked>
+                <label for="cleanAudioCheck">🎙️ Crystal Clear Audio Enhancer (شور ختم کر کے آواز صاف کریں)</label>
+            </div>
+        </div>
+
+        <!-- SECTION 5: EXPORT & DIRECT UPLOAD -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>🚀 4. Export & Direct Social Upload</span>
+                <select id="resSelect" style="width: auto; padding: 4px 8px;">
+                    <option value="720p">720p HD</option>
+                    <option value="1080p" selected>1080p Full HD</option>
+                </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="btn btn-dark" onclick="togglePreviewAudio()">▶️ Play / Pause</button>
+                <button class="btn btn-green" onclick="downloadSnapshot()">📸 Save HD Photo</button>
+            </div>
+
+            <button class="btn btn-main-export" onclick="createAndDownloadVideo()">
+                🎞️ Create & Download Video
+            </button>
+
+            <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+                Direct Upload / Share to Social Platforms
+            </div>
+            <div class="social-share-row">
+                <button class="btn" style="background: #ff0000; color: #fff;" onclick="triggerSocialShareWithAd('YouTube')">▶ YouTube</button>
+                <button class="btn" style="background: #111; color: #fff; border: 1px solid #333;" onclick="triggerSocialShareWithAd('TikTok')">🎵 TikTok</button>
+                <button class="btn" style="background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: #fff;" onclick="triggerSocialShareWithAd('Instagram')">📸 Instagram</button>
+            </div>
+        </div>
+
+        <!-- SECTION 6: MULTI-AI API CONNECTOR -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>⚡ 5. Multi-AI API Connector</span>
+                <span id="apiConnectedBadge" style="font-size: 11px; color: #34d399;">● Offline Ready</span>
+            </div>
+
+            <select id="aiModelDropdown" style="margin-bottom: 8px;" onchange="changeAiProvider()">
+                <option value="offline">Built-in Offline AI (Free)</option>
+                <option value="gemini">Google Gemini AI</option>
+                <option value="grok">xAI Grok</option>
+                <option value="chatgpt">OpenAI ChatGPT</option>
+                <option value="deepseek">DeepSeek AI</option>
+            </select>
+
+            <input type="text" id="userApiKey" placeholder="Paste API Key here..." style="margin-bottom: 8px;">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="btn btn-cyan" onclick="storeApiKey()">💾 Save API</button>
+                <button class="btn btn-dark" id="getApiLinkBtn" onclick="openApiWebsite()">🔑 Get Free API ↗</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STICKY BOTTOM AD -->
+    <div class="ad-sticky-footer">
+        <div>[AdSense Sticky Bottom Banner 320x50 - Always Running]</div>
+    </div>
+
+    <!-- RENDERING OVERLAY WITH 5-SECOND ROTATING ADS -->
+    <div id="exportModal">
+        <h2 style="color: var(--primary-cyan); font-size: 20px;">🎬 Creating Your HD Video...</h2>
+        <p style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">آپ کی ویڈیو تیار ہو رہی ہے، براہ کرم انتظار کریں</p>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="exportProgress"></div>
+        </div>
+        <div id="exportPercentText" style="font-weight: bold; color: #34d399; margin-bottom: 12px;">0%</div>
+
+        <div class="ad-modal-card" style="max-width: 340px;">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8;">
+                <span>SPONSORED AD</span>
+                <span id="adRotateTimer" style="color: var(--primary-cyan);">Next Ad in 5s</span>
+            </div>
+            <div class="ad-large-unit" id="rotatingRenderAdBox" style="height: 220px;">
+                <strong>[AdSense Video Render Ad #1]</strong>
+                <span style="font-size: 11px; color: #94a3b8; margin-top: 6px;">300x250 High-Revenue Slot</span>
+            </div>
+        </div>
+    </div>
+
+    <video id="hiddenVideo" loop playsinline crossorigin="anonymous" hidden></video>
+    <audio id="hiddenAudio" crossorigin="anonymous" hidden></audio>
+
+    <script>
+        // ============================================================
+        // 1. INTERSTITIAL ADS LOGIC
+        // ============================================================
+        let pendingAction = null;
+
+        function closeAdModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function openMoreEffectsWithAd() {
+            pendingAction = { type: 'more' };
+            document.getElementById('actionAdOverlay').style.display = 'flex';
+        }
+
+        function triggerSocialShareWithAd(platform) {
+            pendingAction = { type: 'share', platform: platform };
+            document.getElementById('actionAdOverlay').style.display = 'flex';
+        }
+
+        function proceedAfterActionAd() {
+            document.getElementById('actionAdOverlay').style.display = 'none';
+            if (!pendingAction) return;
+            if (pendingAction.type === 'more') {
+                document.getElementById('moreEffectsModal').style.display = 'flex';
+            } else if (pendingAction.type === 'share') {
+                createAndDownloadVideo();
+            }
+            pendingAction = null;
+        }
+
+        // ============================================================
+        // 2. PLATFORM ASPECT RATIO & AUTO-FIT ENGINE (NO BLACK BARS)
+        // ============================================================
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        let currentPlatform = 'tiktok';
+        let fitMode = 'blur'; // 'blur' = Smart Blur Background Fill, 'fill' = Full Box Cover
+
+        function setPlatform(plat, el) {
+            currentPlatform = plat;
+            document.querySelectorAll('.plat-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+
+            if (plat === 'tiktok') {
+                canvas.width = 540;
+                canvas.height = 960;
+                document.getElementById('ratioBadge').innerText = 'TikTok 9:16';
+            } else if (plat === 'youtube') {
+                canvas.width = 960;
+                canvas.height = 540;
+                document.getElementById('ratioBadge').innerText = 'YouTube 16:9';
+            } else if (plat === 'instagram') {
+                canvas.width = 720;
+                canvas.height = 720;
+                document.getElementById('ratioBadge').innerText = 'Instagram 1:1';
+            }
+            createParticles();
+        }
+
+        function setFitMode(mode) {
+            fitMode = mode;
+            if (mode === 'blur') {
+                document.getElementById('btnFitBlur').className = 'btn btn-cyan';
+                document.getElementById('btnFitStretch').className = 'btn btn-dark';
+            } else {
+                document.getElementById('btnFitBlur').className = 'btn btn-dark';
+                document.getElementById('btnFitStretch').className = 'btn btn-cyan';
+            }
+        }
+
+        // ============================================================
+        // 3. REAL-TIME AUDIO ANALYZER
+        // ============================================================
+        const hiddenVideo = document.getElementById('hiddenVideo');
+        const hiddenAudio = document.getElementById('hiddenAudio');
+        let audioCtx = null, analyser = null, dataArray = null, audioSourceNode = null, mediaStreamDestination = null;
+
+        function setupRealAudioAnalyzer() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 128;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                audioSourceNode = audioCtx.createMediaElementSource(hiddenAudio);
+                mediaStreamDestination = audioCtx.createMediaStreamDestination();
+                audioSourceNode.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                audioSourceNode.connect(mediaStreamDestination);
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        // ============================================================
+        // 4. MEDIA UPLOAD & LOOP CONTROLS
+        // ============================================================
+        let loadedImg = null;
+        let hasVideo = false;
+        let totalRepeats = 1;
+        let playedRepeats = 0;
+
+        document.getElementById('imgInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    loadedImg = img;
+                    hasVideo = false;
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        document.getElementById('vidInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            hiddenVideo.src = URL.createObjectURL(file);
+            hiddenVideo.muted = document.getElementById('muteOrigVideo').checked;
+            hiddenVideo.play();
+            hasVideo = true;
+            loadedImg = null;
+        });
+
+        document.getElementById('muteOrigVideo').addEventListener('change', function() {
+            hiddenVideo.muted = this.checked;
+        });
+
+        document.getElementById('audInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            setupRealAudioAnalyzer();
+            hiddenAudio.src = URL.createObjectURL(file);
+            playedRepeats = 0;
+            hiddenAudio.play();
+        });
+
+        hiddenAudio.addEventListener('ended', function() {
+            playedRepeats++;
+            if (playedRepeats < totalRepeats) {
+                hiddenAudio.currentTime = 0;
+                hiddenAudio.play();
+            }
+        });
+
+        function selectRepeat(num, btn) {
+            totalRepeats = num;
+            playedRepeats = 0;
+            document.getElementById('loopDisplay').innerText = 'Loop: ' + num + 'x';
+            document.querySelectorAll('.rep-pill').forEach(p => p.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+
+        function applyCustomLoop() {
+            const val = parseInt(document.getElementById('customLoopBox').value);
+            if (val && val > 0) {
+                document.querySelectorAll('.rep-pill').forEach(p => p.classList.remove('active'));
+                selectRepeat(val, null);
+            }
+        }
+
+        // ============================================================
+        // 5. HD ENHANCERS & 100 LIVE EFFECTS
+        // ============================================================
+        const brightSlider = document.getElementById('brightSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const satSlider = document.getElementById('satSlider');
+        const scaleSlider = document.getElementById('scaleSlider');
+
+        brightSlider.oninput = () => document.getElementById('brightVal').innerText = brightSlider.value + '%';
+        contrastSlider.oninput = () => document.getElementById('contrastVal').innerText = contrastSlider.value + '%';
+        satSlider.oninput = () => document.getElementById('satVal').innerText = satSlider.value + '%';
+        scaleSlider.oninput = () => document.getElementById('scaleText').innerText = scaleSlider.value + '%';
+
+        function autoEnhanceHD() {
+            brightSlider.value = 114;
+            contrastSlider.value = 118;
+            satSlider.value = 125;
+            document.getElementById('brightVal').innerText = '114%';
+            document.getElementById('contrastVal').innerText = '118%';
+            document.getElementById('satVal').innerText = '125%';
+        }
+
+        const hundredEffectsList = [
+            { id: 'snow', icon: '❄️', name: 'Snowfall' },
+            { id: 'roses', icon: '🌹', name: 'Red Roses' },
+            { id: 'rain', icon: '🌧️', name: 'Heavy Rain' },
+            { id: 'sakura', icon: '🌸', name: 'Sakura' },
+            { id: 'hearts', icon: '💖', name: 'Pink Hearts' },
+            { id: 'stars', icon: '✨', name: 'Gold Stars' },
+            { id: 'leaves', icon: '🍂', name: 'Autumn Leaves' },
+            { id: 'fire', icon: '🔥', name: 'Fire Sparks' },
+            { id: 'butterfly', icon: '🦋', name: 'Butterflies' },
+            { id: 'bubbles', icon: '🫧', name: 'Bubbles' },
+            { id: 'diamonds', icon: '💎', name: 'Diamonds' },
+            { id: 'sunflower', icon: '🌻', name: 'Sunflowers' },
+            { id: 'tulip', icon: '🌷', name: 'Pink Tulips' },
+            { id: 'hibiscus', icon: '🌺', name: 'Hibiscus' },
+            { id: 'maple', icon: '🍁', name: 'Maple Leaf' },
+            { id: 'clover', icon: '🍀', name: 'Lucky Clover' },
+            { id: 'music', icon: '🎵', name: 'Music Notes' },
+            { id: 'crown', icon: '👑', name: 'Royal Crown' },
+            { id: 'lightning', icon: '⚡', name: 'Lightning' },
+            { id: 'moon', icon: '🌙', name: 'Crescent Moon' }
+        ];
+        // Generate full 100 items
+        const extraIcons = ['💫','🌟','🎊','🎉','🎈','🎀','🎁','🕊️','🦢','🦚','🌈','☀️','🌤️','💧','🌊','❄️','🌸','🌼','💐','🥀','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💘','💝','✨','⚡','🔥','💥','❄️','☃️','🌊','🍂','🍃','🌿','🌾','🌵','🌴','🌲','🌳','🌺','🌻','🌹','🌷','🌼','🌸','💐','🍄','🌰','🦋','🐝','🐞','🕊️','🦅','🦆','🦉','🦩','🦚','🦜','🦢','🐕','🐈','🐇','🦊','🐻','🐼','🐨','🐯'];
+        while (hundredEffectsList.length < 100) {
+            const idx = hundredEffectsList.length + 1;
+            const ic = extraIcons[idx % extraIcons.length];
+            hundredEffectsList.push({ id: 'custom_' + idx, icon: ic, name: 'Effect #' + idx });
+        }
+
+        function renderHundredGrid(filterText = '') {
+            const grid = document.getElementById('allHundredGrid');
+            grid.innerHTML = '';
+            hundredEffectsList.forEach(item => {
+                if (filterText && !item.name.toLowerCase().includes(filterText.toLowerCase())) return;
+                const div = document.createElement('div');
+                div.className = 'effect-btn';
+                div.innerHTML = `<span>${item.icon}</span>${item.name}`;
+                div.onclick = () => {
+                    activeEffectChar = item.icon;
+                    activeEffect = item.id;
+                    document.getElementById('currentEffectLabel').innerText = item.icon + ' ' + item.name;
+                    document.getElementById('moreEffectsModal').style.display = 'none';
+                    createParticles();
+                };
+                grid.appendChild(div);
+            });
+        }
+        renderHundredGrid();
+
+        function filterHundredEffects() {
+            renderHundredGrid(document.getElementById('effectSearchBox').value);
+        }
+
+        let activeEffect = 'snow';
+        let activeEffectChar = '❄️';
+        let particles = [];
+
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < 65; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 14 + 10,
+                    vy: Math.random() * 2.5 + 1.2,
+                    vx: (Math.random() - 0.5) * 1.4
+                });
+            }
+        }
+        createParticles();
+
+        function changeEffect(type, label, el) {
+            activeEffect = type;
+            const map = { snow: '❄️', roses: '🌹', rain: '💧', sakura: '🌸', hearts: '💖', none: '' };
+            activeEffectChar = map[type] || '✨';
+            document.getElementById('currentEffectLabel').innerText = label;
+            document.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
+            if (el) el.classList.add('active');
+            createParticles();
+        }
+
+        // ============================================================
+        // 6. SMART AUTO-FIT DRAWING LOOP (ZERO BLACK EDGES)
+        // ============================================================
+        let discAngle = 0;
+
+        function drawMediaAutoFit(source, srcW, srcH, zoom) {
+            const cw = canvas.width;
+            const ch = canvas.height;
+
+            // Step 1: Draw Blurred Color-Matched Background to eliminate black bars
+            if (fitMode === 'blur') {
+                ctx.save();
+                ctx.filter = `blur(24px) brightness(75%) saturate(130%)`;
+                const coverScale = Math.max(cw / srcW, ch / srcH) * 1.1;
+                const bw = srcW * coverScale;
+                const bh = srcH * coverScale;
+                ctx.drawImage(source, (cw - bw) / 2, (ch - bh) / 2, bw, bh);
+                ctx.restore();
+            }
+
+            // Step 2: Draw Sharp Foreground Image/Video with HD Filters
+            ctx.save();
+            ctx.filter = `brightness(${brightSlider.value}%) contrast(${contrastSlider.value}%) saturate(${satSlider.value}%)`;
+            ctx.translate(cw / 2, ch / 2);
+            ctx.scale(zoom, zoom);
+
+            let scale;
+            if (fitMode === 'fill') {
+                scale = Math.max(cw / srcW, ch / srcH);
+            } else {
+                scale = Math.min(cw / srcW, ch / srcH);
+            }
+            const fw = srcW * scale;
+            const fh = srcH * scale;
+            ctx.drawImage(source, -fw / 2, -fh / 2, fw, fh);
+            ctx.restore();
+        }
+
+        function drawFrame() {
+            const cw = canvas.width;
+            const ch = canvas.height;
+
+            ctx.fillStyle = '#070b14';
+            ctx.fillRect(0, 0, cw, ch);
+
+            const baseZoom = scaleSlider.value / 100;
+            const cineZoom = document.getElementById('toolZoom').checked ? (1 + Math.sin(Date.now() / 1200) * 0.05) : 1;
+            const zoom = baseZoom * cineZoom;
+
+            if (hasVideo && hiddenVideo.readyState >= 2) {
+                drawMediaAutoFit(hiddenVideo, hiddenVideo.videoWidth || 540, hiddenVideo.videoHeight || 960, zoom);
+            } else if (loadedImg) {
+                drawMediaAutoFit(loadedImg, loadedImg.width, loadedImg.height, zoom);
+            } else {
+                ctx.fillStyle = '#00e5ff';
+                ctx.font = 'bold 26px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Neuro Editor AI', cw / 2, ch / 2 - 12);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '14px sans-serif';
+                ctx.fillText('Add Photo or Video + Song Above', cw / 2, ch / 2 + 16);
+            }
+
+            // Falling Live Particles
+            if (activeEffect !== 'none' && activeEffectChar) {
+                particles.forEach(p => {
+                    p.y += p.vy;
+                    p.x += p.vx;
+                    if (p.y > ch) { p.y = -20; p.x = Math.random() * cw; }
+                    ctx.font = p.size + 'px serif';
+                    ctx.fillText(activeEffectChar, p.x, p.y);
+                });
+            }
+
+            // Watermark
+            const chName = document.getElementById('textChannel').value;
+            if (chName) {
+                ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                ctx.font = 'bold 16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(chName, cw / 2, 42);
+            }
+
+            // Poetry Overlay
+            const poetry = document.getElementById('textPoetry').value;
+            if (poetry) {
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.beginPath();
+                ctx.roundRect(24, 70, cw - 48, 56, 12);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 20px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(poetry, cw / 2, 105);
+            }
+
+            // Real-Time Colorful Audio Waves
+            if (document.getElementById('toolWave').checked) {
+                if (analyser && !hiddenAudio.paused) {
+                    analyser.getByteFrequencyData(dataArray);
+                }
+                const bars = Math.min(40, Math.floor(cw / 14));
+                const barW = 6;
+                const gap = 4;
+                const totalW = bars * (barW + gap);
+                const startX = (cw - totalW) / 2;
+                const centerY = ch - 125;
+
+                for (let i = 0; i < bars; i++) {
+                    let amp = 4;
+                    if (analyser && !hiddenAudio.paused && dataArray) {
+                        const val = dataArray[i % dataArray.length];
+                        amp = Math.max(4, (val / 255) * 60);
+                    }
+                    const hue = (i / bars) * 320;
+                    ctx.fillStyle = `hsl(${hue}, 95%, 58%)`;
+                    ctx.beginPath();
+                    ctx.roundRect(startX + i * (barW + gap), centerY - amp / 2, barW, amp, 4);
+                    ctx.fill();
+                }
+            }
+
+            // Subscribe + Bell + Like Overlay
+            if (document.getElementById('toolSub').checked) {
+                const pillW = 210;
+                const pillH = 34;
+                const pillX = (cw - pillW) / 2;
+                const pillY = ch - 76;
+
+                ctx.strokeStyle = 'rgba(255, 59, 48, 0.85)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(pillX, pillY, pillW, pillH, 18);
+                ctx.stroke();
+
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('👍', pillX + 24, pillY + 23);
+
+                ctx.fillStyle = '#ff0000';
+                ctx.beginPath();
+                ctx.roundRect(pillX + 46, pillY + 4, 118, 26, 13);
+                ctx.fill();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText('SUBSCRIBED', pillX + 105, pillY + 21);
+
+                ctx.font = '16px sans-serif';
+                ctx.fillText('🔔', pillX + 186, pillY + 23);
+            }
+
+            // Neon Border
+            if (document.getElementById('toolBorder').checked) {
+                ctx.strokeStyle = '#00e5ff';
+                ctx.lineWidth = 8;
+                ctx.strokeRect(4, 4, cw - 8, ch - 8);
+            }
+
+            // TikTok Disc
+            if (document.getElementById('toolDisc').checked) {
+                discAngle += 0.05;
+                ctx.save();
+                ctx.translate(cw - 44, ch - 60);
+                ctx.rotate(discAngle);
+                ctx.fillStyle = '#111827';
+                ctx.beginPath();
+                ctx.arc(0, 0, 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#00e5ff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.fillStyle = '#fff';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('🎵', 0, 5);
+                ctx.restore();
+            }
+
+            // Song Timeline
+            if (document.getElementById('toolLine').checked) {
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(24, ch - 24, cw - 48, 5);
+                let prog = 0.25;
+                if (hiddenAudio.duration) prog = hiddenAudio.currentTime / hiddenAudio.duration;
+                ctx.fillStyle = '#00e5ff';
+                ctx.fillRect(24, ch - 24, (cw - 48) * prog, 5);
+            }
+
+            requestAnimationFrame(drawFrame);
+        }
+        drawFrame();
+
+        // ============================================================
+        // 7. POETRY & MULTI-AI API LINKS
+        // ============================================================
+        const verses = [
+            "دل کی باتیں خاموشی سے کہہ جاتے ہیں ✨",
+            "وقت بدلتا ہے مگر یادیں ہمیشہ رہتی ہیں 🥀",
+            "سکون صرف ان لمحوں میں ہے جو اپنوں ساتھ گزریں 🌙",
+            "محبت لفظوں کی نہیں احساس کی محتاج ہوتی ہے 💖"
+        ];
+        function autoPoetry() {
+            document.getElementById('textPoetry').value = verses[Math.floor(Math.random() * verses.length)];
+        }
+
+        const aiPortals = {
+            offline: { url: '', btn: '🔑 Get Free API ↗' },
+            gemini: { url: 'https://aistudio.google.com/app/apikey', btn: '🔑 Go to Gemini API ↗' },
+            grok: { url: 'https://console.x.ai/', btn: '🔑 Go to Grok API ↗' },
+            chatgpt: { url: 'https://platform.openai.com/api-keys', btn: '🔑 Go to ChatGPT API ↗' },
+            deepseek: { url: 'https://platform.deepseek.com/api_keys', btn: '🔑 Go to DeepSeek API ↗' }
+        };
+
+        function changeAiProvider() {
+            const p = document.getElementById('aiModelDropdown').value;
+            document.getElementById('getApiLinkBtn').innerText = aiPortals[p].btn;
+        }
+
+        function openApiWebsite() {
+            const p = document.getElementById('aiModelDropdown').value;
+            if (p === 'offline') {
+                window.open('https://aistudio.google.com/app/apikey', '_blank');
+            } else {
+                window.open(aiPortals[p].url, '_blank');
+            }
+        }
+
+        function storeApiKey() {
+            const p = document.getElementById('aiModelDropdown').value;
+            const k = document.getElementById('userApiKey').value.trim();
+            localStorage.setItem('neuro_provider', p);
+            localStorage.setItem('neuro_apikey', k);
+            document.getElementById('apiConnectedBadge').innerText = '● Connected (' + p.toUpperCase() + ')';
+        }
+
+        // ============================================================
+        // 8. EXPORT & 5-SECOND ROTATING ADS DURING VIDEO RENDER
+        // ============================================================
+        function togglePreviewAudio() {
+            setupRealAudioAnalyzer();
+            if (hiddenAudio.src) {
+                if (hiddenAudio.paused) hiddenAudio.play();
+                else hiddenAudio.pause();
+            }
+            if (hasVideo) {
+                if (hiddenVideo.paused) hiddenVideo.play();
+                else hiddenVideo.pause();
+            }
+        }
+
+        function downloadSnapshot() {
+            const a = document.createElement('a');
+            a.download = `Neuro-Editor-${currentPlatform}.png`;
+            a.href = canvas.toDataURL('image/png');
+            a.click();
+        }
+
+        function createAndDownloadVideo() {
+            setupRealAudioAnalyzer();
+            const modal = document.getElementById('exportModal');
+            const bar = document.getElementById('exportProgress');
+            const pct = document.getElementById('exportPercentText');
+            const adBox = document.getElementById('rotatingRenderAdBox');
+            const adTimerLabel = document.getElementById('adRotateTimer');
+            modal.style.display = 'flex';
+
+            const canvasStream = canvas.captureStream(30);
+            const combinedTracks = [...canvasStream.getVideoTracks()];
+            if (mediaStreamDestination && hiddenAudio.src) {
+                combinedTracks.push(...mediaStreamDestination.stream.getAudioTracks());
+            }
+
+            const finalStream = new MediaStream(combinedTracks);
+            let recorder;
+            try {
+                recorder = new MediaRecorder(finalStream, { mimeType: 'video/webm' });
+            } catch (e) {
+                recorder = new MediaRecorder(finalStream);
+            }
+
+            const chunks = [];
+            recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Neuro-Editor-${currentPlatform}.webm`;
+                a.click();
+            };
+
+            if (hiddenAudio.src) { hiddenAudio.currentTime = 0; hiddenAudio.play(); }
+            if (hasVideo) { hiddenVideo.currentTime = 0; hiddenVideo.play(); }
+            recorder.start();
+
+            let progress = 0;
+            let adNumber = 1;
+            let secCounter = 5;
+
+            const adRotationInterval = setInterval(() => {
+                secCounter--;
+                if (secCounter <= 0) {
+                    adNumber++;
+                    secCounter = 5;
+                    adBox.innerHTML = `<strong>[AdSense Video Render Ad #${adNumber}]</strong><span style="font-size:11px;color:#94a3b8;margin-top:6px;">300x250 High-Revenue Slot</span>`;
+                }
+                adTimerLabel.innerText = `Next Ad in ${secCounter}s`;
+            }, 1000);
+
+            const timer = setInterval(() => {
+                progress += 2;
+                bar.style.width = progress + '%';
+                pct.innerText = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    clearInterval(adRotationInterval);
+                    recorder.stop();
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        bar.style.width = '0%';
+                    }, 400);
+                }
+            }, 250);
+        }
+    </script>
+</body>
+</html>
